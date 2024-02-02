@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Joad/rss_aggregator/internal/auth"
 	"github.com/Joad/rss_aggregator/internal/database"
 	"github.com/google/uuid"
 )
@@ -43,16 +42,6 @@ func (cfg *apiConfig) createUserHandler(w http.ResponseWriter, r *http.Request) 
 	respondWithJSON(w, http.StatusCreated, dbUserToUser(user))
 }
 
-func (cfg *apiConfig) getUserHandler(w http.ResponseWriter, r *http.Request) {
-	apiKey, err := auth.GetApiKeyFromHeader(r.Header)
-	if err != nil {
-		respondWithError(w, http.StatusUnauthorized, "API key not found")
-		return
-	}
-	user, err := cfg.DB.GetUserByApiKey(r.Context(), apiKey)
-	if err != nil {
-		respondWithError(w, http.StatusNotFound, "User not found")
-		return
-	}
+func (cfg *apiConfig) getUserHandler(w http.ResponseWriter, r *http.Request, user database.User) {
 	respondWithJSON(w, http.StatusOK, dbUserToUser(user))
 }

@@ -20,7 +20,7 @@ func (cfg *apiConfig) routes() *chi.Mux {
 	api.Get("/readiness", readinessHandler)
 	api.Get("/err", errHandler)
 	api.Post("/users", cfg.createUserHandler)
-	api.Get("/users", cfg.getUserHandler)
+	api.Get("/users", cfg.middlewareAuth(cfg.getUserHandler))
 
 	router.Mount("/v1", api)
 	return router
