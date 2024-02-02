@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func routes() *chi.Mux {
+func (cfg *apiConfig) routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -19,6 +19,7 @@ func routes() *chi.Mux {
 	api := chi.NewRouter()
 	api.Get("/readiness", readinessHandler)
 	api.Get("/err", errHandler)
+	api.Post("/users", cfg.createUserHandler)
 
 	router.Mount("/v1", api)
 	return router
