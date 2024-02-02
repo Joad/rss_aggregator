@@ -24,6 +24,11 @@ func (cfg *apiConfig) routes() *chi.Mux {
 	api.Get("/users", cfg.middlewareAuth(cfg.getUserHandler))
 
 	api.Post("/feeds", cfg.middlewareAuth(cfg.createFeedHandler))
+	api.Get("/feeds", cfg.getFeedsHandler)
+
+	api.Post("/feed_follows", cfg.middlewareAuth(cfg.createFeedFollowHandler))
+	api.Delete("/feed_follows/{feedFollowID}", cfg.middlewareAuth(cfg.deleteFeedFollowHandler))
+	api.Get("/feed_follows", cfg.middlewareAuth(cfg.getFeedFollows))
 
 	router.Mount("/v1", api)
 	return router

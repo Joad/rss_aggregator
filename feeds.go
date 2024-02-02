@@ -14,6 +14,10 @@ func (cfg *apiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request, 
 		Name string `json:"name"`
 		Url  string `json:"url"`
 	}
+	type response struct {
+		Feed       Feed       `json:"feed"`
+		FeedFollow FeedFollow `json:"feed_follow"`
+	}
 
 	decoder := json.NewDecoder(r.Body)
 	params := &parameters{}
@@ -36,6 +40,29 @@ func (cfg *apiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request, 
 		respondWithError(w, http.StatusInternalServerError, "Error creating feed")
 		return
 	}
+	feedFollow, err := cfg.DB.CreateFeedFollow(r.Context(), database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: now,
+		UpdatedAt: now,
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error creating feed follow")
+		return
+	}
 
-	respondWithJSON(w, http.StatusCreated, dbFeedToFeed(feed))
+	respondWithJSON(w, http.StatusCreated, response{
+		Feed:       dbFeedToFeed(feed),
+		FeedFollow: dbFeedFollowToFeedFollow(feedFollow),
+	})
+}
+
+func (cfg *apiConfig) getFeedsHandler(w http.ResponseWriter, r *http.Request) {
+	feeds, err := cfg.DB.GetAllFeeds(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error retrieving feeds")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, dbFeedsToFeeds(feeds))
 }

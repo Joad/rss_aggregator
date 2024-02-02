@@ -13,12 +13,6 @@ func (cfg *apiConfig) createUserHandler(w http.ResponseWriter, r *http.Request) 
 	type parameters struct {
 		Name string `json:"name"`
 	}
-	type response struct {
-		Id        string    `json:"id"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-		Name      string    `json:"name"`
-	}
 
 	decoder := json.NewDecoder(r.Body)
 	params := &parameters{}
