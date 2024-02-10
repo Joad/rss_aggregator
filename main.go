@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Joad/rss_aggregator/internal/database"
+	"github.com/Joad/rss_aggregator/internal/fetcher"
 	_ "github.com/lib/pq"
 
 	"github.com/joho/godotenv"
@@ -29,6 +30,8 @@ func main() {
 	cfg := apiConfig{
 		DB: dbQueries,
 	}
+
+	go fetcher.FetchFeeds(cfg.DB)
 
 	server := http.Server{
 		Handler: cfg.routes(),

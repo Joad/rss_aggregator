@@ -30,6 +30,8 @@ func (cfg *apiConfig) routes() *chi.Mux {
 	api.Delete("/feed_follows/{feedFollowID}", cfg.middlewareAuth(cfg.deleteFeedFollowHandler))
 	api.Get("/feed_follows", cfg.middlewareAuth(cfg.getFeedFollows))
 
+	api.Get("/posts", cfg.middlewareAuth(cfg.getPostsByUserHandler))
+
 	router.Mount("/v1", api)
 	return router
 }
